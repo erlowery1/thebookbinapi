@@ -54,7 +54,7 @@
             },
             "mysql.data": {
               "target": "Package",
-              "version": "[*, )"
+              "version": "[8.0.22, )"
             }
           },
           "imports": [
