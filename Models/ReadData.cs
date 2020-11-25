@@ -69,10 +69,9 @@ namespace api.Models
                 cmd.Prepare();
                 using(var rdr = cmd.ExecuteReader()){
                     rdr.Read();
-                    db.CloseConnection(); //close connection
+                    //db.CloseConnection(); //close connection
                     return new Book(){Id = rdr.GetInt32(0), Isbn = rdr.GetString(1), Title = rdr.GetString(2), Author = rdr.GetString(3), Genre = rdr.GetString(4), Price = rdr.GetDouble(5)};
                 }
-                
                 
             }else{
                 return new Book();
@@ -131,45 +130,6 @@ namespace api.Models
             // }
 
             // return allTransactions;
-        }
-
-        //finds a book with the matching id and returns the data
-        public Transaction GetTransaction(int Id)
-        {
-            DBConnect db = new DBConnect();
-            bool isOpen = db.OpenConnection();
-
-            if(isOpen){
-                MySqlConnection conn = db.GetConn();
-                string stm = "SELECT * from transactions WHERE id = @id";
-                MySqlCommand cmd = new MySqlCommand(stm, conn);
-                cmd.Parameters.AddWithValue("id", Id);
-                cmd.Prepare();
-                using(var rdr = cmd.ExecuteReader()){
-                    rdr.Read();
-                    db.CloseConnection(); //close connection
-                    return new Transaction(){Id = rdr.GetInt32(0), Isbn = rdr.GetString(1), Title = rdr.GetString(2), Author = rdr.GetString(3), Genre = rdr.GetString(4), Price = rdr.GetDouble(5)};
-                }
-                
-                
-            }else{
-                return new Transaction();
-            }
-            // string directory = Directory.GetCurrentDirectory();
-            // //Console.WriteLine(directory);
-            // string cs = @"URI = file:"+ directory+ @"/bookbin.db";
-            // using var con = new SQLiteConnection(cs);
-            // con.Open();
-
-            // string stm = "SELECT * from transactions WHERE id = @id";
-            // using var cmd = new SQLiteCommand(stm, con);
-            // cmd.Parameters.AddWithValue("id", Id);
-            // cmd.Prepare();
-            // using SQLiteDataReader rdr = cmd.ExecuteReader();
-
-            // rdr.Read();
-            // return new Transaction{Id = rdr.GetInt32(0), Isbn = rdr.GetString(1), Title = rdr.GetString(2), Author = rdr.GetString(3), Genre = rdr.GetString(4), Price = rdr.GetDouble(5), Name = rdr.GetString(6), Date = rdr.GetDateTime(7)};
-
         }
     }
 }
