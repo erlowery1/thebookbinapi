@@ -11,6 +11,7 @@ namespace api.Models
     {
         public void UpdateBook(int id, Book value){
 
+            Console.WriteLine("made it to edit");
             DBConnect db = new DBConnect(); //create connection object
             bool isOpen = db.OpenConnection(); //open connection
 
