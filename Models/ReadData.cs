@@ -32,7 +32,7 @@ namespace api.Models
                         allBooks.Add(new Book{Id = rdr.GetInt32(0), Isbn = rdr.GetString(1), Title = rdr.GetString(2), Author = rdr.GetString(3), Genre = rdr.GetString(4), Price = rdr.GetDouble(5)});
                     }
                 }
-                db.CloseConnection();
+                db.CloseConnection(); //close connection
                 return allBooks;
             }else{
                 return new List<Book>();
@@ -58,61 +58,117 @@ namespace api.Models
         //finds a book with the matching id and returns the data
         public Book GetBook(int Id)
         {
-            string directory = Directory.GetCurrentDirectory();
-            //Console.WriteLine(directory);
-            string cs = @"URI = file:"+ directory+ @"/bookbin.db";
-            using var con = new SQLiteConnection(cs);
-            con.Open();
+            DBConnect db = new DBConnect();
+            bool isOpen = db.OpenConnection();
 
-            string stm = "SELECT * from books WHERE id = @id";
-            using var cmd = new SQLiteCommand(stm, con);
-            cmd.Parameters.AddWithValue("id", Id);
-            cmd.Prepare();
-            using SQLiteDataReader rdr = cmd.ExecuteReader();
+            if(isOpen){
+                MySqlConnection conn = db.GetConn();
+                string stm = "SELECT * from books WHERE id = @id";
+                MySqlCommand cmd = new MySqlCommand(stm, conn);
+                cmd.Parameters.AddWithValue("id", Id);
+                cmd.Prepare();
+                using(var rdr = cmd.ExecuteReader()){
+                    rdr.Read();
+                    db.CloseConnection(); //close connection
+                    return new Book(){Id = rdr.GetInt32(0), Isbn = rdr.GetString(1), Title = rdr.GetString(2), Author = rdr.GetString(3), Genre = rdr.GetString(4), Price = rdr.GetDouble(5)};
+                }
+                
+                
+            }else{
+                return new Book();
+            }
+            // string directory = Directory.GetCurrentDirectory();
+            // //Console.WriteLine(directory);
+            // string cs = @"URI = file:"+ directory+ @"/bookbin.db";
+            // using var con = new SQLiteConnection(cs);
+            // con.Open();
 
-            rdr.Read();
-            return new Book(){Id = rdr.GetInt32(0), Isbn = rdr.GetString(1), Title = rdr.GetString(2), Author = rdr.GetString(3), Genre = rdr.GetString(4), Price = rdr.GetDouble(5)};
+            // string stm = "SELECT * from books WHERE id = @id";
+            // using var cmd = new SQLiteCommand(stm, con);
+            // cmd.Parameters.AddWithValue("id", Id);
+            // cmd.Prepare();
+            // using SQLiteDataReader rdr = cmd.ExecuteReader();
+
+            // rdr.Read();
+            // return new Book(){Id = rdr.GetInt32(0), Isbn = rdr.GetString(1), Title = rdr.GetString(2), Author = rdr.GetString(3), Genre = rdr.GetString(4), Price = rdr.GetDouble(5)};
 
         }
 
 
         public List<Transaction> GetAllTransactions()
         {
-            string directory = Directory.GetCurrentDirectory();
-            string cs = @"URI = file:"+ directory+ @"/bookbin.db";
-            using var con = new SQLiteConnection(cs);
-            con.Open();
+            DBConnect db = new DBConnect();
+            bool isOpen = db.OpenConnection();
 
-            string stm = "SELECT * from transactions";
-            using var cmd = new SQLiteCommand(stm, con);
-
-            using SQLiteDataReader rdr = cmd.ExecuteReader();
-
-            List<Transaction> allTransactions = new List<Transaction>();
-            while(rdr.Read()){
-                allTransactions.Add(new Transaction{Id = rdr.GetInt32(0), Isbn = rdr.GetString(1), Title = rdr.GetString(2), Author = rdr.GetString(3), Genre = rdr.GetString(4), Price = rdr.GetDouble(5), Name = rdr.GetString(6), Date = rdr.GetDateTime(7)});
+            if(isOpen){
+                MySqlConnection conn = db.GetConn();
+                string stm = "SELECT * from transactions";
+                MySqlCommand cmd = new MySqlCommand(stm, conn);
+                List<Transaction> alltransactions = new List<Transaction>();
+                using(var rdr = cmd.ExecuteReader()){
+                    while(rdr.Read()){
+                        alltransactions.Add(new Transaction{Id = rdr.GetInt32(0), Isbn = rdr.GetString(1), Title = rdr.GetString(2), Author = rdr.GetString(3), Genre = rdr.GetString(4), Price = rdr.GetDouble(5), Name = rdr.GetString(6), Date = rdr.GetDateTime(7)});
+                    }
+                }
+                db.CloseConnection(); //close connection
+                return alltransactions;
+            }else{
+                return new List<Transaction>();
             }
+            // string directory = Directory.GetCurrentDirectory();
+            // string cs = @"URI = file:"+ directory+ @"/bookbin.db";
+            // using var con = new SQLiteConnection(cs);
+            // con.Open();
 
-            return allTransactions;
+            // string stm = "SELECT * from transactions";
+            // using var cmd = new SQLiteCommand(stm, con);
+
+            // using SQLiteDataReader rdr = cmd.ExecuteReader();
+
+            // List<Transaction> allTransactions = new List<Transaction>();
+            // while(rdr.Read()){
+            //     allTransactions.Add(new Transaction{Id = rdr.GetInt32(0), Isbn = rdr.GetString(1), Title = rdr.GetString(2), Author = rdr.GetString(3), Genre = rdr.GetString(4), Price = rdr.GetDouble(5), Name = rdr.GetString(6), Date = rdr.GetDateTime(7)});
+            // }
+
+            // return allTransactions;
         }
 
         //finds a book with the matching id and returns the data
         public Transaction GetTransaction(int Id)
         {
-            string directory = Directory.GetCurrentDirectory();
-            //Console.WriteLine(directory);
-            string cs = @"URI = file:"+ directory+ @"/bookbin.db";
-            using var con = new SQLiteConnection(cs);
-            con.Open();
+            DBConnect db = new DBConnect();
+            bool isOpen = db.OpenConnection();
 
-            string stm = "SELECT * from transactions WHERE id = @id";
-            using var cmd = new SQLiteCommand(stm, con);
-            cmd.Parameters.AddWithValue("id", Id);
-            cmd.Prepare();
-            using SQLiteDataReader rdr = cmd.ExecuteReader();
+            if(isOpen){
+                MySqlConnection conn = db.GetConn();
+                string stm = "SELECT * from transactions WHERE id = @id";
+                MySqlCommand cmd = new MySqlCommand(stm, conn);
+                cmd.Parameters.AddWithValue("id", Id);
+                cmd.Prepare();
+                using(var rdr = cmd.ExecuteReader()){
+                    rdr.Read();
+                    db.CloseConnection(); //close connection
+                    return new Transaction(){Id = rdr.GetInt32(0), Isbn = rdr.GetString(1), Title = rdr.GetString(2), Author = rdr.GetString(3), Genre = rdr.GetString(4), Price = rdr.GetDouble(5)};
+                }
+                
+                
+            }else{
+                return new Transaction();
+            }
+            // string directory = Directory.GetCurrentDirectory();
+            // //Console.WriteLine(directory);
+            // string cs = @"URI = file:"+ directory+ @"/bookbin.db";
+            // using var con = new SQLiteConnection(cs);
+            // con.Open();
 
-            rdr.Read();
-            return new Transaction{Id = rdr.GetInt32(0), Isbn = rdr.GetString(1), Title = rdr.GetString(2), Author = rdr.GetString(3), Genre = rdr.GetString(4), Price = rdr.GetDouble(5), Name = rdr.GetString(6), Date = rdr.GetDateTime(7)};
+            // string stm = "SELECT * from transactions WHERE id = @id";
+            // using var cmd = new SQLiteCommand(stm, con);
+            // cmd.Parameters.AddWithValue("id", Id);
+            // cmd.Prepare();
+            // using SQLiteDataReader rdr = cmd.ExecuteReader();
+
+            // rdr.Read();
+            // return new Transaction{Id = rdr.GetInt32(0), Isbn = rdr.GetString(1), Title = rdr.GetString(2), Author = rdr.GetString(3), Genre = rdr.GetString(4), Price = rdr.GetDouble(5), Name = rdr.GetString(6), Date = rdr.GetDateTime(7)};
 
         }
     }
